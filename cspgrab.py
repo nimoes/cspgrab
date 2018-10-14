@@ -19,9 +19,17 @@ def scraper(input_url):
 
 	# decode byte to string object
 	decoded = response.content.decode('utf-8')
-	
 	soup = BeautifulSoup(decoded, 'html.parser')
-	return soup
+
+	# href
+	href_list = soup.find_all(name=['a', 'link'], href=True)
+	href = [item['href'] for item in href_list]
+	# src
+	src_list = soup.find_all(['font', 'iframe', 'img', 'input', 'script'], src=True)
+	src = [item['src'] for item in src_list]
+	
+	return{'href':href, 'src':src}
+
 
 def urlarg():
 	parser = argparse.ArgumentParser(description='Content-Security-Policy header implementation guide',
@@ -30,6 +38,7 @@ def urlarg():
 		help='please type in url (http or https) for data scraping')
 	arg = parser.parse_args()
 	return arg.u
+
 
 def main():
 	url = urlarg()
